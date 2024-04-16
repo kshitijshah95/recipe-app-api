@@ -25,6 +25,10 @@ ARG DEV=false
 RUN python -m venv /py && \
 # upgrades python package manager pip
     /py/bin/pip install --upgrade pip && \
+# install dependencies for psycopg2 package
+    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        build-base postgresql-dev musl-dev && \
 #installs dependencies
     /py/bin/pip install -r /tmp/requirements.txt && \
     if [ $DEV = "true" ]; \
@@ -32,6 +36,8 @@ RUN python -m venv /py && \
     fi && \
 # Remove temporary files    
     rm -rf /tmp && \
+# removes labeled packages above
+    apk del .tmp-build-deps && \
 # adds a new user inside the image
     adduser \
         --disabled-password \
