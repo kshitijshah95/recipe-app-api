@@ -1,0 +1,20 @@
+# version of docker-compose syntax
+version: "3.9"
+
+# can contain 1 or more services
+services:
+  app:
+    # Build the docker file inside this directory
+    build:
+      context: .
+      args:
+        - DEV=true
+    # Maps 8000 on local to 8000 on image
+    ports:
+      - "8000:8000"
+    # maps dir on local to image
+    volumes:
+      - ./app:/app
+    # command to run docker image (default command)
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
